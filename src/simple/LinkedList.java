@@ -1,17 +1,17 @@
 package simple;
 
+import java.util.List;
+
 public class LinkedList {
 
     public static void main(String[] args) {
         ListNode head1 = new ListNode(1);
-        head1.next = new ListNode(5);
-        head1.next.next = new ListNode(6);
+//        head1.next = new ListNode(2);
+//        head1.next.next = new ListNode(2);
+//        head1.next.next.next = new ListNode(1);
+//        //head1.next.next.next.next = new ListNode(1);
 
-        ListNode head2 = new ListNode(2);
-        head2.next = new ListNode(3);
-        head2.next.next = new ListNode(4);
-
-        toString(mergeTwoLists(head1, head2));
+        System.out.println(isPalindrome(head1));
     }
 
     public static ListNode reverseList(ListNode head) {
@@ -55,7 +55,30 @@ public class LinkedList {
     }
 
     public static boolean isPalindrome(ListNode head) {
+        int count = 0;
+        ListNode temp = head;
+        while (temp != null) {
+            temp = temp.next;
+            count++;
+        }
+        int start;
+        if (count % 2 == 0) {
+            start = count / 2 + 1;
+        } else {
+            start = count / 2 + 2;
+        }
+        ListNode halfHead = head;
+        for (int i = 1; i < start; i++) {
+            halfHead = halfHead.next;
+        }
 
+        ListNode endNode = reverseList(halfHead);
+        while (head != null && endNode != null) {
+            if (head.val != endNode.val) return false;
+            head = head.next;
+            endNode = endNode.next;
+        }
+        return true;
     }
 
 
