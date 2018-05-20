@@ -1,6 +1,9 @@
 package simple;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LinkedList {
 
@@ -79,6 +82,16 @@ public class LinkedList {
             endNode = endNode.next;
         }
         return true;
+    }
+
+    public static boolean hasCycle(ListNode head) {
+        ListNode slow=head,fast=head;
+        while (fast != null && fast.next!=null) {
+            slow=slow.next;
+            fast=fast.next.next;
+            if(slow.equals(fast)) return true;
+        }
+        return false;
     }
 
 
