@@ -3,20 +3,12 @@ package simple;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Tree {
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(3);
-        root.left = new TreeNode(9);
-        root.right = new TreeNode(20);
-        //root.left.left = new TreeNode(3);
-//        root.left.right = new TreeNode(3);
-        root.right.left = new TreeNode(15);
-        root.right.right = new TreeNode(7);
-        System.out.println(levelOrder(root));
+        int nums[] = new int[]{-10, -3, 0,2, 5, 9};
+        sortedArrayToBST(nums);
     }
 
     public static int maxDepth(TreeNode root) {
@@ -93,6 +85,21 @@ public class Tree {
         }
         return result;
 
+    }
+
+    public static TreeNode sortedArrayToBST(int[] nums) {
+        return buildTree(nums, 0, nums.length - 1);
+    }
+
+    private static TreeNode buildTree(int[] nums, int start, int end) {
+        if (start > end) return null;
+        int middle = (start + end) / 2;
+        int i = nums[middle];
+        if (start == end) return new TreeNode(i);
+        TreeNode root = new TreeNode(i);
+        root.left = buildTree(nums, start, middle - 1);
+        root.right = buildTree(nums, middle + 1, end);
+        return root;
     }
 
 
