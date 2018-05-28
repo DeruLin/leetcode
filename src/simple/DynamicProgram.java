@@ -21,4 +21,19 @@ public class DynamicProgram {
             return next;
         }
     }
+
+    public static int maxProfit(int[] prices) {
+        if (prices.length == 0) return 0;
+        int profit = 0, min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            int price = prices[i];
+            if (price > min) {
+                if (profit < price - min) profit = price - min;
+            } else {
+                min = price;
+            }
+        }
+        return profit;
+
+    }
 }
