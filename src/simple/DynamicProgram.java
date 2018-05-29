@@ -3,7 +3,8 @@ package simple;
 public class DynamicProgram {
 
     public static void main(String[] args) {
-        System.out.println(climbStairs(4));
+        int nums[] = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
+        System.out.println(maxSubArray(nums));
     }
 
     public static int climbStairs(int n) {
@@ -34,6 +35,17 @@ public class DynamicProgram {
             }
         }
         return profit;
+    }
 
+    public static int maxSubArray(int[] nums) {
+        if (nums.length == 0) return 0;
+        int sum = nums[0], all_sum = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+            if (all_sum <= 0) all_sum = num;
+            else all_sum += num;
+            sum = Math.max(sum, all_sum);
+        }
+        return sum;
     }
 }
