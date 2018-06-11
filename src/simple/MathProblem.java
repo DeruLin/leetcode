@@ -1,13 +1,12 @@
 package simple;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-public class Math {
+public class MathProblem {
 
     public static void main(String[] args) {
-        fizzBuzz(15);
+        countPrimes(10000);
     }
 
     public static List<String> fizzBuzz(int n) {
@@ -34,6 +33,27 @@ public class Math {
             else if (array[i] == 3) stringList.add("FizzBuzz");
         }
         return stringList;
+    }
 
+    public static int countPrimes(int n) {
+        boolean array[] = new boolean[n];
+        for (int i = 2; i < n / 2 + 1; i++) {
+            if (array[i]) continue;
+            int count = 2;
+            while (i * count < n) {
+                array[i * count] = true;
+                count++;
+            }
+        }
+
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (!array[i]) {
+                count++;
+                System.out.println(i);
+            }
+
+        }
+        return count;
     }
 }
