@@ -6,7 +6,7 @@ import java.util.List;
 public class MathProblem {
 
     public static void main(String[] args) {
-        countPrimes(10000);
+        System.out.println(romanToInt("MCMXCIV"));
     }
 
     public static List<String> fizzBuzz(int n) {
@@ -66,5 +66,61 @@ public class MathProblem {
             if (n == 3) return true;
         }
         return false;
+    }
+
+    public static int romanToInt(String s) {
+        char chars[] = s.toCharArray();
+        int result = 0;
+        char pre = '1';
+        for (char c : chars) {
+            if (pre == 'I' && c == 'V') {
+                result += 3;
+                pre = '1';
+            } else if (pre == 'I' && c == 'X') {
+                result += 8;
+                pre = '1';
+            } else if (pre == 'X' && c == 'L') {
+                result += 30;
+                pre = '1';
+            } else if (pre == 'X' && c == 'C') {
+                result += 80;
+                pre = '1';
+            } else if (pre == 'C' && c == 'D') {
+                result += 300;
+                pre = '1';
+            } else if (pre == 'C' && c == 'M') {
+                result += 800;
+                pre = '1';
+            } else {
+                switch (c) {
+                    case 'I':
+                        result += 1;
+                        break;
+                    case 'V':
+                        result += 5;
+                        break;
+                    case 'X':
+                        result += 10;
+                        break;
+                    case 'L':
+                        result += 50;
+                        break;
+                    case 'C':
+                        result += 100;
+                        break;
+                    case 'D':
+                        result += 500;
+                        break;
+                    case 'M':
+                        result += 1000;
+                        break;
+                    default:
+                        break;
+                }
+                pre = c;
+            }
+        }
+        return result;
+
     }
 }
