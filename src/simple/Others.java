@@ -7,17 +7,22 @@ public class Others {
     }
 
     public static int hammingWeight(int n) {
-        long x = n & 0x0FFFFFFFFl;
-        if (x < 1) return 0;
-        else if (x <= 2) return 1;
-        else {
-            int count = 0;
-            do {
-                long i = x % 2;
-                x /= 2;
-                if (i == 1) count++;
-            } while (x > 0);
-            return count;
+        int count = 0;
+        while (n != 0) {
+            int i = n & 1;
+            if (i == 1) count++;
+            n = n >>> 1;
         }
+        return count;
+    }
+
+    public static int hammingDistance(int x, int y) {
+        int z = x ^ y;
+        int count = 0;
+        for (int i = 0; i < 32; i++) {
+            count += (z & 1);
+            z = z >>> 1;
+        }
+        return count;
     }
 }
