@@ -3,7 +3,8 @@ package simple;
 public class Others {
 
     public static void main(String[] args) {
-        System.out.println(hammingWeight(2147483648));
+        int a[] = new int[]{0};
+        System.out.println(missingNumber(a));
     }
 
     public static int hammingWeight(int n) {
@@ -24,5 +25,17 @@ public class Others {
             z = z >>> 1;
         }
         return count;
+    }
+
+    public static int missingNumber(int[] nums) {
+        int n = nums.length;
+        int sum = 0;
+        for (int i = 1; i < n + 1; i++) {
+            sum += i;
+        }
+        for (int i : nums) {
+            sum -= i;
+        }
+        return sum;
     }
 }
