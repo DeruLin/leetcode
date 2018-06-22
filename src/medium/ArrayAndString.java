@@ -2,13 +2,14 @@ package medium;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ArrayAndString {
 
     public static void main(String[] args) {
-        int nums[][] = new int[][]{{0,1,2,0},{3,4,5,2},{1,3,1,5}};
-        setZeroes(nums);
+        String nums[] = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
+        groupAnagrams(nums);
     }
 
     public static List<List<Integer>> threeSum(int[] nums) {
@@ -67,4 +68,23 @@ public class ArrayAndString {
             }
         }
     }
+
+    public static List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char c[] = str.toCharArray();
+            Arrays.sort(c);
+            String newStr = new String(c);
+            if (map.containsKey(newStr)) {
+                List<String> list = map.get(newStr);
+                list.add(str);
+            } else {
+                List<String> list = new ArrayList<>();
+                list.add(str);
+                map.put(newStr, list);
+            }
+        }
+        return new ArrayList<>(map.values());
+    }
+
 }
