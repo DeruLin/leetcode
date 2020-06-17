@@ -244,8 +244,8 @@ public class Middle {
         while (tmp != null) {
             Node tmp1 = tmp;
             while (tmp1.next != null) {
-                if(tmp1.right!=null)
-                    tmp1.right.next =  tmp1.next.left;
+                if (tmp1.right != null)
+                    tmp1.right.next = tmp1.next.left;
                 tmp1 = tmp1.next;
             }
             tmp = tmp.left;
@@ -260,6 +260,101 @@ public class Middle {
             }
             traverseForConnect(node.left);
             traverseForConnect(node.right);
+        }
+    }
+
+
+    //二叉树的前序遍历 https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
+    public static List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.empty()) {
+            TreeNode tmp = stack.pop();
+            if (tmp != null) {
+                if (tmp.right != null) stack.push(tmp.right);
+                if (tmp.left != null) stack.push(tmp.left);
+                stack.push(tmp);
+                stack.push(null);
+            } else {
+                result.add(stack.pop().val);
+            }
+        }
+        return result;
+    }
+
+    //打家劫舍 III https://leetcode-cn.com/problems/house-robber-iii/
+    public static int[] levelSum;
+
+    public static int rob(TreeNode root) {
+        levelSum = new int[10000];
+        traverseForRob(root, 0);
+        List<Integer> dp = new ArrayList<>();
+        int index = 0;
+        dp.add(levelSum[0]);
+        dp.add(Math.max(levelSum[0], levelSum[1]));
+        for (int i = 2; i < levelSum.length; i++) {
+            if (levelSum[i] == 0) {
+                index = i;
+                break;
+            }
+            dp.add(Math.max(dp.get(i - 2) + levelSum[i], dp.get(i - 1)));
+        }
+        return dp.get(index);
+    }
+
+    public static void traverseForRob(TreeNode node, int level) {
+        if (node != null) {
+            traverseForRob(node.left, level + 1);
+            levelSum[level] += node.val;
+            traverseForRob(node.right, level + 1);
+        }
+    }
+
+    //删除二叉搜索树中的节点 https://leetcode-cn.com/problems/delete-node-in-a-bst/
+    public static TreeNode deleteNode(TreeNode root, int key) {
+        if (root.val == key) {
+            // 找到啦，进行删除
+            if (root.left == null && root.right == null)
+                return null;
+            else if (root.right == null)
+                return root.left;
+            else if (root.left == null)
+                return root.right;
+            else {
+                TreeNode minNode = getMin(root.right);
+                root.val = minNode.val;
+                root.right = deleteNode(root.right, minNode.val);
+            }
+        } else if (root.val > key) {
+            root.left = deleteNode(root.left, key);
+        } else if (root.val < key) {
+            root.right = deleteNode(root.right, key);
+        }
+        return root;
+    }
+
+    public static TreeNode getMin(TreeNode node) {
+        // BST 最左边的就是最小的
+        while (node.left != null) node = node.left;
+        return node;
+    }
+
+    // 二叉树最大宽度 https://leetcode-cn.com/problems/maximum-width-of-binary-tree/
+    public static int widthOfBinaryTree(TreeNode root) {
+        if (root == null) return 0;
+        int width = 1;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        return width;
+    }
+
+    public static void traverseForWidthOfBinaryTree(TreeNode node, int position, int level) {
+        if (node != null) {
+            traverseForWidthOfBinaryTree(node.left, position * 2 - 1, level + 1);
+            levelSum[level] += node.val;
+            traverseForWidthOfBinaryTree(node.right, position * 2, level + 1);
         }
     }
 
@@ -307,15 +402,14 @@ public class Middle {
     ;
 
     public static void main(String[] args) {
-        Node root = new Node(1);
-        root.left = new Node(2);
-        root.right = new Node(3);
-        root.left.left = new Node(4);
-        root.left.right = new Node(5);
-        root.right.left = new Node(6);
-        root.right.right = new Node(7);
-        connect(root);
-        System.out.println();
+        TreeNode root = new TreeNode(1);
+//        root.left = new TreeNode(2);
+//        root.right = new TreeNode(3);
+//        root.left.left = new TreeNode(4);
+//        root.left.right = new TreeNode(5);
+//        root.right.left = new TreeNode(6);
+//        root.right.right = new TreeNode(7);
+        System.out.println(widthOfBinaryTree(root));
     }
 
 }
