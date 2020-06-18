@@ -342,18 +342,28 @@ public class Middle {
     }
 
     // 二叉树最大宽度 https://leetcode-cn.com/problems/maximum-width-of-binary-tree/
+    public static int[] maxPosition, minPosition;
+
     public static int widthOfBinaryTree(TreeNode root) {
+        maxPosition = new int[10000];
+        minPosition = new int[10000];
         if (root == null) return 0;
-        int width = 1;
-        Queue<TreeNode> q = new LinkedList<>();
-        q.offer(root);
+        traverseForWidthOfBinaryTree(root, 1, 0);
+        int width = 0;
+        for (int i = 0; i < maxPosition.length; i++) {
+            if (maxPosition[i] == 0 || minPosition[i] == 0) break;
+            if (maxPosition[i] - minPosition[i] + 1 > width) width = maxPosition[i] - minPosition[i] + 1;
+        }
         return width;
     }
 
     public static void traverseForWidthOfBinaryTree(TreeNode node, int position, int level) {
         if (node != null) {
+            if (maxPosition[level] == 0) maxPosition[level] = position;
+            else if (maxPosition[level] < position) maxPosition[level] = position;
+            if (minPosition[level] == 0) minPosition[level] = position;
+            else if (minPosition[level] > position) minPosition[level] = position;
             traverseForWidthOfBinaryTree(node.left, position * 2 - 1, level + 1);
-            levelSum[level] += node.val;
             traverseForWidthOfBinaryTree(node.right, position * 2, level + 1);
         }
     }
