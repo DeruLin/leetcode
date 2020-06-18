@@ -263,6 +263,78 @@ public class Middle {
         }
     }
 
+    public static Node connect1(Node root) {
+        if (root == null) {
+            return root;
+        }
+        Node curr = root;
+        while (curr != null) {
+            Node head = curr;
+            Node nextLevelHead = null;
+            Node nextLevelFirst = null;
+            boolean flag = true;
+            while (head != null) {
+                if (head.left == null && head.right == null) {
+                    head = head.next;
+                    continue;
+                } else if (head.right == null) {
+                    if (nextLevelHead == null) {
+                        if (flag) {
+                            nextLevelFirst = head.left;
+                            flag = false;
+                        }
+                    } else {
+                        nextLevelHead.next = head.left;
+                    }
+                    nextLevelHead = head.left;
+                } else if (head.left == null) {
+                    if (nextLevelHead == null) {
+                        if (flag) {
+                            nextLevelFirst = head.right;
+                            flag = false;
+                        }
+                    } else {
+                        nextLevelHead.next = head.right;
+                    }
+                    nextLevelHead = head.right;
+                } else {
+                    if (nextLevelHead == null) {
+                        if (flag) {
+                            nextLevelFirst = head.left;
+                            flag = false;
+                        }
+                    } else {
+                        nextLevelHead.next = head.left;
+                    }
+                    head.left.next = head.right;
+                    nextLevelHead = head.right;
+                }
+                head = head.next;
+            }
+            curr = nextLevelFirst;
+        }
+        return root;
+    }
+
+
+    //求根到叶子节点数字之和 https://leetcode-cn.com/problems/sum-root-to-leaf-numbers/
+    public static int totalSum;
+
+    public static int sumNumbers(TreeNode root) {
+        totalSum = 0;
+        traverseForSumNumbers(root, 0);
+        return totalSum;
+    }
+
+    public static void traverseForSumNumbers(TreeNode node, int currSum) {
+        if (node != null) {
+            if (node.left == null && node.right == null) {
+                totalSum += (currSum * 10 + node.val);
+            }
+            traverseForSumNumbers(node.left, currSum * 10 + node.val);
+            traverseForSumNumbers(node.right, currSum * 10 + node.val);
+        }
+    }
 
     //二叉树的前序遍历 https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
     public static List<Integer> preorderTraversal(TreeNode root) {
@@ -368,6 +440,113 @@ public class Middle {
         }
     }
 
+    //二叉树的右视图 https://leetcode-cn.com/problems/binary-tree-right-side-view/
+    public static List<Integer> res = new ArrayList<>();
+
+    public static List<Integer> rightSideView(TreeNode root) {
+        traverseForRightSideView(root, 0); // 从根节点开始访问，根节点深度是0
+        return res;
+    }
+
+    public static void traverseForRightSideView(TreeNode root, int depth) {
+        if (root == null) {
+            return;
+        }
+        // 先访问 当前节点，再递归地访问 右子树 和 左子树。
+        if (depth == res.size()) {   // 如果当前节点所在深度还没有出现在res里，说明在该深度下当前节点是第一个被访问的节点，因此将当前节点加入res中。
+            res.add(root.val);
+        }
+        depth++;
+        traverseForRightSideView(root.right, depth);
+        traverseForRightSideView(root.left, depth);
+    }
+
+    //完全二叉树的节点个数 https://leetcode-cn.com/problems/count-complete-tree-nodes/
+    public static int maxLevel, count;
+
+    public static int countNodes(TreeNode root) {
+        maxLevel = -1;
+        count = 0;
+        traverseForCountNodes(root, 0);
+        return (int) (Math.pow(2, maxLevel) - 1 + count);
+    }
+
+    public static void traverseForCountNodes(TreeNode root, int level) {
+        if (root != null) {
+            if (maxLevel == level) count++;
+            traverseForCountNodes(root.right, level + 1);
+            traverseForCountNodes(root.left, level + 1);
+        } else {
+            if (maxLevel == -1)
+                maxLevel = level;
+        }
+    }
+
+    //二叉搜索树中第K小的元素 https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/
+    public static int countForKthSmallest, val, searchK;
+    public static boolean flag;
+
+    public int kthSmallest(TreeNode root, int k) {
+        searchK = k;
+        countForKthSmallest = 0;
+        val = 0;
+        flag = false;
+        traverseForKthSmallest(root);
+        return val;
+    }
+
+    public static void traverseForKthSmallest(TreeNode root) {
+        if (flag) return;
+        if (root != null) {
+            traverseForKthSmallest(root.left);
+            countForKthSmallest++;
+            if (countForKthSmallest == searchK) {
+                flag = true;
+                val = root.val;
+            }
+            traverseForKthSmallest(root.right);
+        }
+    }
+
+    //二叉树的最近公共祖先 https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
+    public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return null;
+        if (root.val == p.val || root.val == q.val) return root;
+        if (root.left == null && root.right == null) return null;
+        TreeNode a = lowestCommonAncestor(root.left, p, q);
+        TreeNode b = lowestCommonAncestor(root.right, p, q);
+        if (a != null && b != null) {
+            return root;
+        }
+        if (a != null) return a;
+        return b;
+    }
+
+    //N叉树的层序遍历 https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
+    public List<List<Integer>> levelOrder(MultiNode root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root==null) return result;
+        Queue<MultiNode> q = new LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            List<Integer> levelResult = new ArrayList<>();
+            List<MultiNode> tmpList = new ArrayList<>(q);
+            q.clear();
+            for (MultiNode node : tmpList) {
+                if (node != null) {
+                    levelResult.add(node.val);
+                    q.addAll(node.children);
+                }
+            }
+            result.add(levelResult);
+        }
+        return result;
+    }
+
+    //
+    public int[] findFrequentTreeSum(TreeNode root) {
+
+    }
 
     private static class TreeNode {
         int val;
@@ -409,17 +588,36 @@ public class Middle {
         }
     }
 
+    class MultiNode {
+        public int val;
+        public List<MultiNode> children;
+
+        public MultiNode() {
+        }
+
+        public MultiNode(int _val) {
+            val = _val;
+        }
+
+        public MultiNode(int _val, List<Node> _children) {
+            val = _val;
+            children = _children;
+        }
+    }
+
     ;
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(1);
-//        root.left = new TreeNode(2);
-//        root.right = new TreeNode(3);
-//        root.left.left = new TreeNode(4);
-//        root.left.right = new TreeNode(5);
-//        root.right.left = new TreeNode(6);
-//        root.right.right = new TreeNode(7);
-        System.out.println(widthOfBinaryTree(root));
+        TreeNode root = new TreeNode(3);
+        root.left = new TreeNode(5);
+        root.right = new TreeNode(1);
+        root.left.left = new TreeNode(6);
+        root.left.right = new TreeNode(2);
+        root.left.right.left = new TreeNode(7);
+        root.left.right.right = new TreeNode(4);
+        root.right.left = new TreeNode(0);
+        root.right.right = new TreeNode(8);
+        System.out.println(lowestCommonAncestor(root, new TreeNode(5), new TreeNode(1)).val);
     }
 
 }
