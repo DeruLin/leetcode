@@ -525,7 +525,7 @@ public class Middle {
     //N叉树的层序遍历 https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
     public List<List<Integer>> levelOrder(MultiNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        if (root==null) return result;
+        if (root == null) return result;
         Queue<MultiNode> q = new LinkedList<>();
         q.offer(root);
         while (!q.isEmpty()) {
@@ -544,8 +544,30 @@ public class Middle {
     }
 
     //
-    public int[] findFrequentTreeSum(TreeNode root) {
+//    public int[] findFrequentTreeSum(TreeNode root) {
+//
+//    }
 
+
+    //找树左下角的值 https://leetcode-cn.com/problems/find-bottom-left-tree-value/
+    public static int maxLevelForFBL, valForFBL;
+
+    public static int findBottomLeftValue(TreeNode root) {
+        valForFBL = 0;
+        maxLevelForFBL = -1;
+        traverseForFindBottomLeftValue(root, 0);
+        return valForFBL;
+    }
+
+    public static void traverseForFindBottomLeftValue(TreeNode node, int level) {
+        if (node != null) {
+            if (level > maxLevelForFBL) {
+                maxLevelForFBL = level;
+                valForFBL = node.val;
+            }
+            traverseForFindBottomLeftValue(node.left, level + 1);
+            traverseForFindBottomLeftValue(node.right, level + 1);
+        }
     }
 
     private static class TreeNode {
@@ -599,7 +621,7 @@ public class Middle {
             val = _val;
         }
 
-        public MultiNode(int _val, List<Node> _children) {
+        public MultiNode(int _val, List<MultiNode> _children) {
             val = _val;
             children = _children;
         }
@@ -617,7 +639,7 @@ public class Middle {
         root.left.right.right = new TreeNode(4);
         root.right.left = new TreeNode(0);
         root.right.right = new TreeNode(8);
-        System.out.println(lowestCommonAncestor(root, new TreeNode(5), new TreeNode(1)).val);
+        System.out.println(findBottomLeftValue(root));
     }
 
 }
