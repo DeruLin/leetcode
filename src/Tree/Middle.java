@@ -525,7 +525,7 @@ public class Middle {
     //N叉树的层序遍历 https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
     public List<List<Integer>> levelOrder(MultiNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        if (root == null) return result;
+        if (root==null) return result;
         Queue<MultiNode> q = new LinkedList<>();
         q.offer(root);
         while (!q.isEmpty()) {
@@ -640,16 +640,16 @@ public class Middle {
     ;
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(5);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(-3);
-//        root.left.left = new TreeNode(6);
-//        root.left.right = new TreeNode(2);
-//        root.left.right.left = new TreeNode(7);
-//        root.left.right.right = new TreeNode(4);
-//        root.right.left = new TreeNode(0);
-//        root.right.right = new TreeNode(8);
-        System.out.println(findFrequentTreeSum(root));
+        TreeNode root = new TreeNode(3);
+        root.left = new TreeNode(5);
+        root.right = new TreeNode(1);
+        root.left.left = new TreeNode(6);
+        root.left.right = new TreeNode(2);
+        root.left.right.left = new TreeNode(7);
+        root.left.right.right = new TreeNode(4);
+        root.right.left = new TreeNode(0);
+        root.right.right = new TreeNode(8);
+        System.out.println(findBottomLeftValue(root));
     }
 
 }
