@@ -580,6 +580,27 @@ public class Middle {
         return 0;
     }
 
+    //找树左下角的值 https://leetcode-cn.com/problems/find-bottom-left-tree-value/
+    public static int maxLevelForFBL, valForFBL;
+
+    public static int findBottomLeftValue(TreeNode root) {
+        valForFBL = 0;
+        maxLevelForFBL = -1;
+        traverseForFindBottomLeftValue(root, 0);
+        return valForFBL;
+    }
+
+    public static void traverseForFindBottomLeftValue(TreeNode node, int level) {
+        if (node != null) {
+            if (level > maxLevelForFBL) {
+                maxLevelForFBL = level;
+                valForFBL = node.val;
+            }
+            traverseForFindBottomLeftValue(node.left, level + 1);
+            traverseForFindBottomLeftValue(node.right, level + 1);
+        }
+    }
+
     private static class TreeNode {
         int val;
         TreeNode left;

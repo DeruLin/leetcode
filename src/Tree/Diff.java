@@ -2,6 +2,7 @@ package Tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Diff {
 
@@ -34,7 +35,7 @@ public class Diff {
     }
 
     public static TreeNode helperForRecoverFromPreorder(List<Integer> valList, List<Integer> levelList, int start, int end) {
-        if (start > end ) return null;
+        if (start > end) return null;
         if (start == end) return new TreeNode(valList.get(start));
         TreeNode root = new TreeNode(valList.get(start));
         int nextLevel = levelList.get(start) + 1;
@@ -48,17 +49,36 @@ public class Diff {
                 }
             }
         }
-        if(a==-1) {
-            root.left=null;
-            root.right=null;
-        }
-        else if(b==-1){
+        if (a == -1) {
+            root.left = null;
+            root.right = null;
+        } else if (b == -1) {
             root.left = helperForRecoverFromPreorder(valList, levelList, a, end);
-        }else {
+        } else {
             root.left = helperForRecoverFromPreorder(valList, levelList, a, b - 1);
             root.right = helperForRecoverFromPreorder(valList, levelList, b, end);
         }
         return root;
+    }
+
+    //二叉树的后序遍历 https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.empty()) {
+            TreeNode tmp = stack.pop();
+            if (tmp != null) {
+                stack.push(tmp);
+                stack.push(null);
+                if (tmp.right != null) stack.push(tmp.right);
+                if (tmp.left != null) stack.push(tmp.left);
+            } else {
+                result.add(stack.pop().val);
+            }
+        }
+        return result;
     }
 
     private static class TreeNode {
