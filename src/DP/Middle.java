@@ -108,9 +108,85 @@ public class Middle {
         canPartitionHelper(nums, start + 1, sum + curr);
     }
 
+    //最长公共子序列 https://leetcode-cn.com/problems/longest-common-subsequence/
+    public static int longestCommonSubsequence(String text1, String text2) {
+        int lenI = text1.length() + 1;
+        int lenJ = text2.length() + 1;
+        int[][] dp = new int[lenI][lenJ];
+        for (int i = 0; i < lenI; i++) {
+            dp[i][0] = 0;
+        }
+        for (int j = 0; j < lenJ; j++) {
+            dp[0][j] = 0;
+        }
+        for (int i = 1; i < lenI; i++) {
+            for (int j = 1; j < lenJ; j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+            }
+        }
+        return dp[lenI - 1][lenJ - 1];
+    }
+
+    //最长回文子序列 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
+    public static int longestPalindromeSubseq(String s) {
+        int len = s.length() + 1;
+        String s_reverse = "";
+        for (int i = len - 2; i >= 0; i--) {
+            s_reverse += s.charAt(i);
+        }
+        int[][] dp = new int[len][len];
+        for (int i = 0; i < len; i++) {
+            dp[i][0] = 0;
+        }
+        for (int j = 0; j < len; j++) {
+            dp[0][j] = 0;
+        }
+        for (int i = 1; i < len; i++) {
+            for (int j = 1; j < len; j++) {
+                if (s.charAt(i - 1) == s_reverse.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+            }
+        }
+        return dp[len - 1][len - 1];
+    }
+
+    //石子游戏 https://leetcode-cn.com/problems/stone-game/
+    public static boolean stoneGame(int[] piles) {
+        int len = piles.length;
+        int[][][] dp = new int[len][len][2];
+        for (int start = 0; start < len; start++) {
+            for (int end = 0; end < len; end++) {
+                if (start == end) {
+                    dp[start][end][0] = piles[start];
+                    dp[start][end][1] = 0;
+                }
+            }
+        }
+        for (int start = len-1; start >= 0; start--) {
+            for (int end = 0; end < len; end++) {
+                if (start >= end) continue;
+                int left = dp[start + 1][end][1] + piles[start];
+                int right = dp[start][end - 1][1] + piles[end];
+                if (left > right) {
+                    dp[start][end][0] = left;
+                    dp[start][end][1] = dp[start + 1][end][0];
+                } else {
+                    dp[start][end][0] = right;
+                    dp[start][end][1] = dp[start][end - 1][0];
+                }
+            }
+        }
+        return dp[0][len-1][0] > dp[0][len-1][1];
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(change(5, new int[]{1, 2, 5}));
+        System.out.println(stoneGame(new int[]{3,2,10,4}));
     }
 
 }
