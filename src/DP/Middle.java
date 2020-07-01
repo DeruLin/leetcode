@@ -1,9 +1,9 @@
 package DP;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import simple.Tree;
+
+import java.util.*;
 
 public class Middle {
 
@@ -167,7 +167,7 @@ public class Middle {
                 }
             }
         }
-        for (int start = len-1; start >= 0; start--) {
+        for (int start = len - 1; start >= 0; start--) {
             for (int end = 0; end < len; end++) {
                 if (start >= end) continue;
                 int left = dp[start + 1][end][1] + piles[start];
@@ -181,12 +181,135 @@ public class Middle {
                 }
             }
         }
-        return dp[0][len-1][0] > dp[0][len-1][1];
+        return dp[0][len - 1][0] > dp[0][len - 1][1];
+    }
+
+    public static int rob1(int[] nums) {
+        if (nums.length == 0) return 0;
+        if (nums.length == 1) return nums[0];
+        if (nums.length == 2) return Math.max(nums[0], nums[1]);
+        int result = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            int[] dp = new int[nums.length];
+            dp[0] = nums[i];
+            if (i + 1 < nums.length)
+                dp[1] = Math.max(nums[i], nums[i + 1]);
+            else
+                dp[1] = Math.max(nums[i], nums[0]);
+            int count = 2;
+
+            while (count < nums.length - 1) {
+                int index = count + i;
+                if (index > nums.length - 1) index = index - (nums.length);
+                dp[count] = Math.max(dp[count - 1], nums[index] + dp[count - 2]);
+                count++;
+            }
+            if (dp[nums.length - 2] > result) result = dp[nums.length - 2];
+        }
+        return result;
+    }
+
+    //打家劫舍 III https://leetcode-cn.com/problems/house-robber-iii/
+
+    public static Map<TreeNode, Integer> memo;
+
+    public static int rob(TreeNode root) {
+        memo = new HashMap<>();
+        return traverseForRob(root);
+    }
+
+    public static int traverseForRob(TreeNode node) {
+        if (node == null) return 0;
+        if (memo.containsKey(node)) {
+            return memo.get(node);
+        }
+        int a = node.val;
+        if (node.left != null) {
+            a += traverseForRob(node.left.left) + traverseForRob(node.left.right);
+        }
+        if (node.right != null) {
+            a += traverseForRob(node.right.left) + traverseForRob(node.right.right);
+        }
+        int b = traverseForRob(node.left) + traverseForRob(node.right);
+        int result = Math.max(a, b);
+        memo.put(node, result);
+        return result;
+    }
+
+    //837. 新21点 https://leetcode-cn.com/problems/new-21-game/
+    public static double new21Game(int N, int K, int W) {
+        double[] dp = new double[K + W];
+        double tmp = 0;
+        for (int i = K; i < K + W; i++) {
+            if (i <= N) dp[i] = 1;
+            else dp[i] = 0;
+            tmp += dp[i];
+        }
+        for (int i = K - 1; i >= 0; i--) {
+            dp[i] = tmp / W;
+            tmp = tmp - dp[i + W] + dp[i];
+        }
+        return dp[0];
+    }
+
+    //688. “马”在棋盘上的概率 https://leetcode-cn.com/problems/knight-probability-in-chessboard/
+    public static double knightProbability(int N, int K, int r, int c) {
+        double[][][] dp = new double[K + 1][N][N];
+        dp[0][r][c] = 1;
+        for (int i = 1; i < K; i++) {
+            for (int x = 0; x < N; x++) {
+                for (int y = 0; y < N; y++) {
+                    double p1 = (x - 2 < 0 || y - 1 < 0) ? 0 : dp[i - 1][x - 2][y - 1];
+                    double p2 = (x - 2 < 0 || y + 1 >= N) ? 0 : dp[i - 1][x - 2][y + 1];
+                    double p3 = (x + 2 >= N || y - 1 < 0) ? 0 : dp[i - 1][x + 2][y - 1];
+                    double p4 = (x + 2 >= N || y + 1 >= N) ? 0 : dp[i - 1][x + 2][y + 1];
+                    double p5 = (x - 1 < 0 || y - 2 < 0) ? 0 : dp[i - 1][x - 1][y - 2];
+                    double p6 = (x - 1 < 0 || y + 2 >= N) ? 0 : dp[i - 1][x - 1][y + 2];
+                    double p7 = (x + 1 >= N || y - 2 < 0) ? 0 : dp[i - 1][x + 1][y - 2];
+                    double p8 = (x + 1 >= N || y + 2 >= N) ? 0 : dp[i - 1][x + 1][y + 2];
+                    dp[i][x][y] = (p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8) / 8;
+                }
+            }
+        }
+
+        double res = 0; //这里的答案就是要求出最后一步，落在棋盘上各个位置上概率的总和
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++) {
+                res += dp[K][i][j];
+            }
+        return res;
     }
 
 
+    private static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(stoneGame(new int[]{3,2,10,4}));
+        TreeNode root = new TreeNode(3);
+        root.left = new TreeNode(2);
+        root.right = new TreeNode(3);
+//        root.left.left = new TreeNode(6);
+        root.left.right = new TreeNode(3);
+//        root.right.left = new TreeNode(0);
+        root.right.right = new TreeNode(1);
+        System.out.println(knightProbability(3, 2, 0, 0));
+//        System.out.println(rob1(new int[]{2, 3, 2}));
     }
 
 }

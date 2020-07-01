@@ -30,6 +30,7 @@ public class Diff {
     // 买卖股票的最佳时机 IV https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/
     public static int maxProfit(int k, int[] prices) {
         if (prices.length <= 1) return 0;
+        if (k > prices.length / 2) k = prices.length / 2;
         int[][][] dp = new int[prices.length][k + 1][2];
         for (int j = 0; j <= k; j++) {
             dp[0][j][0] = 0;
@@ -50,7 +51,7 @@ public class Diff {
 
 
     public static void main(String[] args) {
-        System.out.println(maxProfit(2, new int[]{2,4,1}));
+        System.out.println(maxProfit(2, new int[]{3, 2, 6, 5, 0, 3}));
     }
 
 }
