@@ -176,8 +176,24 @@ public class Middle {
 
     }
 
+    //378. 有序矩阵中第K小的元素 https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/
+    public static int kthSmallest(int[][] matrix, int k) {
+
+    }
+
+    public static int binarySearchFor378(int[][] matrix, int k) {
+        int root = (int) Math.pow(k, 0.5);
+        int middle = matrix[root][root];
+        int i = k, j = 0;
+        while (i >= 0 && j <= k) {
+            if (matrix[i][j] <= middle) j++;
+            else i--;
+        }
+    }
+
+
     public static void main(String[] args) {
-        int[] nums = new int[]{1,2,0};
+        int[] nums = new int[]{1, 2, 0};
 
         System.out.println(firstMissingPositive(nums));
     }
