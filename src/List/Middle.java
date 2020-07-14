@@ -76,6 +76,80 @@ public class Middle {
         return prev;
     }
 
+    public static ListNode prev = null;
+
+    public static ListNode reverseList2(ListNode head) {
+        if (head == null) return null;
+        prev = null;
+        return reverseListHelper(head);
+    }
+
+    public static ListNode reverseListHelper(ListNode head) {
+        ListNode curr = head;
+
+        ListNode tmp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = tmp;
+
+        if (curr == null) return prev;
+
+        return reverseListHelper(curr);
+    }
+
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        boolean flag = false;
+        ListNode head = new ListNode(0);
+        ListNode tmp = head;
+        while (l1 != null && l2 != null) {
+            int sum = l1.val + l2.val;
+            if (flag) {
+                flag = false;
+                sum += 1;
+            }
+            if (sum >= 10) {
+                flag = true;
+                sum -= 10;
+            }
+            tmp.next = new ListNode(sum);
+            tmp = tmp.next;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        while (l1 != null) {
+            int sum = l1.val;
+            if (flag) {
+                flag = false;
+                sum += 1;
+            }
+            if (sum >= 10) {
+                flag = true;
+                sum -= 10;
+            }
+            tmp.next = new ListNode(sum);
+            tmp = tmp.next;
+            l1 = l1.next;
+        }
+        while (l2 != null) {
+            int sum = l2.val;
+            if (flag) {
+                flag = false;
+                sum += 1;
+            }
+            if (sum >= 10) {
+                flag = true;
+                sum -= 10;
+            }
+            tmp.next = new ListNode(sum);
+            tmp = tmp.next;
+            l2 = l2.next;
+        }
+        if(flag) {
+            tmp.next = new ListNode(1);
+        }
+        return head.next;
+    }
+
     public static class ListNode {
         int val;
         ListNode next;
@@ -90,7 +164,7 @@ public class Middle {
         start.next = new ListNode(2);
         start.next.next = new ListNode(3);
         start.next.next.next = new ListNode(4);
-        System.out.println(reverseKGroup(start,2));
+        System.out.println(reverseList2(start));
     }
 
 }

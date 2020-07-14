@@ -1,10 +1,8 @@
 package Array;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.io.RandomAccessFile;
+import java.util.*;
 
 public class Middle {
 
@@ -178,24 +176,158 @@ public class Middle {
 
     //378. 有序矩阵中第K小的元素 https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/
     public static int kthSmallest(int[][] matrix, int k) {
+        return binarySearchFor378(matrix, k, matrix[0][0], matrix[matrix.length - 1][matrix.length - 1]);
+    }
+
+    public static int binarySearchFor378(int[][] matrix, int k, int min, int max) {
+        if (min >= max) return min;
+        int mid = (min + max) / 2;
+
+        int n = matrix.length - 1;
+        int i = n, j = 0, count = 0;
+        while (i >= 0 && j <= n) {
+            if (matrix[i][j] <= mid) {
+                count += i + 1;
+                j++;
+            } else {
+                i--;
+            }
+        }
+        if (count >= k)
+            return binarySearchFor378(matrix, k, min, mid);
+
+        else
+            return binarySearchFor378(matrix, k, mid + 1, max);
+    }
+
+//    public static int kthSmallest(int[][] matrix, int k) {
+//        int n = matrix.length;
+//        int left = matrix[0][0];
+//        int right = matrix[n - 1][n - 1];
+//        while (left < right) {
+//            int mid = left + ((right - left) >> 1);
+//            System.out.println("min:" + left + " max:" + right + " mid:" + mid + " check:" + check(matrix, mid, k, n));
+//
+//            if (check(matrix, mid, k, n)) {
+//                right = mid;
+//            } else {
+//                left = mid + 1;
+//            }
+//        }
+//        return left;
+//    }
+
+    public static boolean check(int[][] matrix, int mid, int k, int n) {
+        int i = n - 1;
+        int j = 0;
+        int num = 0;
+        while (i >= 0 && j < n) {
+            if (matrix[i][j] <= mid) {
+                num += i + 1;
+                j++;
+            } else {
+                i--;
+            }
+        }
+        return num >= k;
+    }
+
+    //15. 三数之和 https://leetcode-cn.com/problems/3sum/
+    public static List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            if (i != 0 && nums[i] == nums[i - 1]) continue;
+            if (nums[i] > 0) break;
+            List<List<Integer>> tmpResult = twoSum(nums, i);
+            for (List<Integer> list : tmpResult) {
+                list.add(nums[i]);
+            }
+            result.addAll(tmpResult);
+        }
+        return result;
 
     }
 
-    public static int binarySearchFor378(int[][] matrix, int k) {
-        int root = (int) Math.pow(k, 0.5);
-        int middle = matrix[root][root];
-        int i = k, j = 0;
-        while (i >= 0 && j <= k) {
-            if (matrix[i][j] <= middle) j++;
-            else i--;
+    public static List<List<Integer>> twoSum(int[] nums, int fixIndex) {
+        List<List<Integer>> result = new ArrayList<>();
+        int i = fixIndex + 1, j = nums.length - 1;
+        int target = -nums[fixIndex];
+        while (i < j) {
+            List<Integer> tmp = new ArrayList<>();
+            int currSum = nums[i] + nums[j];
+            if (currSum == target) {
+                tmp.add(nums[i]);
+                tmp.add(nums[j]);
+                result.add(tmp);
+                while (i + 1 < j && nums[i + 1] == nums[i]) i++;
+                i++;
+                j--;
+            } else if (currSum > target) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return result;
+    }
+
+    //56. 合并区间 https://leetcode-cn.com/problems/merge-intervals/
+    class Range implements Comparable<Range> {
+        int min;
+        int max;
+
+        Range(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        @Override
+        public int compareTo(Range o) {
+            if (min < o.min) return -1;
+            else if (min > o.min) return 1;
+            else {
+                return Integer.compare(max, o.max);
+            }
         }
     }
 
+    public int[][] merge(int[][] intervals) {
+        List<Range> rangeList = new ArrayList<>();
+        for (int i = 0; i < intervals.length; i++) {
+            rangeList.add(new Range(intervals[i][0], intervals[i][1]));
+        }
+        Collections.sort(rangeList);
+        int intervalCount = intervals.length;
+        for (int i = 1; i < rangeList.size(); i++) {
+            Range prevRange = rangeList.get(i - 1);
+            Range currRange = rangeList.get(i);
+            if(currRange.min >= prevRange.min && currRange.max <= prevRange.max){
+                currRange.min = prevRange.min;
+                currRange.max = prevRange.max;
+                prevRange.min = Integer.MAX_VALUE;
+                intervalCount--;
+            }
+            else if (currRange.min <= prevRange.max) {
+                currRange.min = prevRange.min;
+                prevRange.min = Integer.MAX_VALUE;
+                intervalCount--;
+            }
+        }
+        int[][] result = new int[intervalCount][2];
+        int count = 0;
+        for (Range range : rangeList) {
+            if (range.min == Integer.MAX_VALUE) continue;
+            result[count][0] = range.min;
+            result[count][1] = range.max;
+            count++;
+        }
+        return result;
+    }
 
     public static void main(String[] args) {
-        int[] nums = new int[]{1, 2, 0};
-
-        System.out.println(firstMissingPositive(nums));
+        int[] nums = new int[]{-2, 0, 0, 2, 2};
+//        System.out.println(merge(nums));
     }
 
 }

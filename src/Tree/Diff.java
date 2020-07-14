@@ -81,6 +81,36 @@ public class Diff {
         return result;
     }
 
+    //124. 二叉树中的最大路径和 https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/
+    public static int maxSum;
+
+    public static int maxPathSum(TreeNode root) {
+        maxSum = Integer.MIN_VALUE;
+        traverseForMaxPathSum(root);
+        return maxSum;
+    }
+
+    public static int traverseForMaxPathSum(TreeNode node) {
+        if (node != null) {
+            int leftSum = traverseForMaxPathSum(node.left);
+            int rightSum = traverseForMaxPathSum(node.right);
+            int bigger = Math.max(leftSum, rightSum);
+            int result;
+            if (leftSum > 0 && rightSum > 0) {
+                result = node.val + leftSum + rightSum;
+            } else if (leftSum > 0) {
+                result = node.val + leftSum;
+            } else if (rightSum > 0) {
+                result = node.val + rightSum;
+            } else {
+                result = node.val;
+            }
+            maxSum = Math.max(result, maxSum);
+            return bigger > 0 ? node.val + bigger : node.val;
+        }
+        return 0;
+    }
+
     private static class TreeNode {
         int val;
         TreeNode left;
@@ -101,16 +131,14 @@ public class Diff {
     }
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-        root.left.left = new TreeNode(4);
-        root.left.right = new TreeNode(5);
-//        root.right.left = new TreeNode(6);
+        TreeNode root = new TreeNode(-10);
+//        root.left = new TreeNode(9);
+//        root.right = new TreeNode(20);
+//        root.left.left = new TreeNode(4);
+//        root.left.right = new TreeNode(5);
+//        root.right.left = new TreeNode(15);
 //        root.right.right = new TreeNode(7);
-
-        TreeNode aa = recoverFromPreorder("1-2--3--4-5--6--7");
-        System.out.println();
+        System.out.println(maxPathSum(root));
     }
 
 }

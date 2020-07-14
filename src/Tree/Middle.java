@@ -510,22 +510,21 @@ public class Middle {
 
     //二叉树的最近公共祖先 https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
     public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null) return null;
-        if (root.val == p.val || root.val == q.val) return root;
-        if (root.left == null && root.right == null) return null;
-        TreeNode a = lowestCommonAncestor(root.left, p, q);
-        TreeNode b = lowestCommonAncestor(root.right, p, q);
-        if (a != null && b != null) {
+        if (root == q || root == p)
             return root;
-        }
-        if (a != null) return a;
-        return b;
+        TreeNode leftResult = lowestCommonAncestor(root.left, p, q);
+        TreeNode rightResult = lowestCommonAncestor(root.right, p, q);
+        if (leftResult != null && rightResult != null)
+            return root;
+        if (leftResult != null) return leftResult;
+        if (rightResult != null) return rightResult;
+        return null;
     }
 
     //N叉树的层序遍历 https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
     public List<List<Integer>> levelOrder(MultiNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        if (root==null) return result;
+        if (root == null) return result;
         Queue<MultiNode> q = new LinkedList<>();
         q.offer(root);
         while (!q.isEmpty()) {

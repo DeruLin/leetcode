@@ -1,5 +1,7 @@
 package DP;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class Diff {
 
     //编辑距离 https://leetcode-cn.com/problems/edit-distance/
@@ -49,9 +51,42 @@ public class Diff {
         return dp[prices.length - 1][k][0];
     }
 
+    //44. 通配符匹配 https://leetcode-cn.com/problems/wildcard-matching/
+    public static boolean isMatch(String s, String p) {
+        boolean[][] dp = new boolean[p.length() + 1][s.length() + 1];
+        boolean allStar = true;
+        for (int i = 0; i < p.length(); i++) {
+            if (p.charAt(i) != '*') {
+                allStar = false;
+            }
+            dp[i + 1][0] = allStar;
+
+        }
+        for (int j = 0; j < s.length(); j++) {
+            dp[0][j + 1] = false;
+        }
+        dp[0][0] = true;
+        for (int i = 1; i <= p.length(); i++) {
+            for (int j = 1; j <= s.length(); j++) {
+                char cp = p.charAt(i - 1);
+                char cs = s.charAt(j - 1);
+                if (cp == '?') {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                if (cp == '*') {
+                    dp[i][j] = dp[i - 1][j - 1] || dp[i][j - 1] || dp[i - 1][j];
+                }
+                if (cp == cs) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+            }
+        }
+        return dp[p.length()][s.length()];
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(maxProfit(2, new int[]{3, 2, 6, 5, 0, 3}));
+        System.out.println(isMatch("a", "a*"));
     }
 
 }

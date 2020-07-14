@@ -11,14 +11,14 @@ public class Middle {
     public static int coinChange(int[] coins, int amount) {
         int[] dp = new int[amount + 1];
         dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            dp[i] = amount + 1;
-            for (int v : coins) {
-                if (i - v < 0) continue;
-                dp[i] = Math.min(dp[i], dp[i - v] + 1);
+        for (int i = 1; i < amount + 1; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int coin : coins) {
+                if (i - coin >= 0 && dp[i - coin] != Integer.MAX_VALUE)
+                    dp[i] = Math.min(dp[i - coin] + 1, dp[i]);
             }
         }
-        return dp[amount] == amount + 1 ? -1 : dp[amount];
+        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
     }
 
 
@@ -303,6 +303,29 @@ public class Middle {
         return result;
     }
 
+    //3. 无重复字符的最长子串 https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
+    public static int lengthOfLongestSubstring(String s) {
+        if (s.length() <= 1) return s.length();
+        int i = 0, j = 0, result = 1;
+        Set<Character> set = new HashSet<>(26);
+        set.add(s.charAt(0));
+        while (j < s.length()) {
+            if (i == j) {
+                j++;
+                continue;
+            }
+            char c = s.charAt(j);
+            while (set.contains(c)) {
+                set.remove(s.charAt(i));
+                i++;
+            }
+            set.add(s.charAt(j));
+            result = Math.max(result, j - i + 1);
+            j++;
+        }
+        return result;
+    }
+
 
     private static class TreeNode {
         int val;
@@ -331,7 +354,7 @@ public class Middle {
         root.left.right = new TreeNode(3);
 //        root.right.left = new TreeNode(0);
         root.right.right = new TreeNode(1);
-        System.out.println(knightProbability(3, 2, 0, 0));
+        System.out.println(coinChange(new int[]{2}, 3));
 //        System.out.println(rob1(new int[]{2, 3, 2}));
     }
 
