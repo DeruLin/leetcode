@@ -1,61 +1,85 @@
-/*wait():令当前线程放弃了cpu的资源，使别的线程可以访问共享的资源，
- *       而当前的线程排队等待，再次对资源的访问
- * notify():唤醒正在排队的等待的同步资源的线程，
- * notifyAll()：唤醒正在排队等待的所有的线程
- *
- *在 java.lang.Object:
- *用这三个方法的注意点：  同步方法或者同步代码块里
- *
- * 使用两个线程打印1----100.线程1和线程2交替打印
- *
- * 分析： 1.我先使用两个线程打印1---100，（先不用交替打印）
- *     2.然后在使用上面的三个方法，在代码里添加
- * */
-
-class PrintNum implements Runnable {
-
-    int num = 1;
-
-
-    @Override
-    public void run() {
-        // TODO Auto-generated method stub
-        synchronized (this) {
-            while (true) {
-                notify();//唤醒wait()的一个或者所有线程
-                if (num <= 100) {
-                    System.out.println(Thread.currentThread().getName() + ":"
-                            + num);
-                    num++;
-                } else {
-                    break;
-                }
-                try {
-                    wait();//释放当前的锁，另一个线程就会进来
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }
-
-}
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Test {
-    public static void main(String[] args) {
-        PrintNum p = new PrintNum();
-        System.out.println(p instanceof PrintNum);
-        Thread t1 = new Thread(p);
-        Thread t2 = new Thread(p);
+    private static Lock lock = new ReentrantLock();
+    private static Condition A = lock.newCondition();
+    private static Condition B = lock.newCondition();
+    private static Condition C = lock.newCondition();
 
-        t1.setName("甲");
-        t2.setName("乙");
+    private static int count = 0;
 
-        t1.start();
-        t2.start();
+    static class ThreadA extends Thread {
+        @Override
+        public void run() {
+            try {
+                lock.lock();
+                for (int i = 0; i < 10; i++) {
+                    while (count % 3 != 0)//注意这里是不等于0，也就是说在count % 3为0之前，当前线程一直阻塞状态
+                        A.await(); // A释放lock锁
+                    System.out.print("A");
+                    count++;
+                    B.signal(); // A执行完唤醒B线程
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    static class ThreadB extends Thread {
+        @Override
+        public void run() {
+            try {
+                lock.lock();
+                for (int i = 0; i < 10; i++) {
+                    while (count % 3 != 1)
+                        B.await();// B释放lock锁，当前面A线程执行后会通过B.signal()唤醒该线程
+                    System.out.print("B");
+                    count++;
+                    C.signal();// B执行完唤醒C线程
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    static class ThreadC extends Thread {
+        @Override
+        public void run() {
+            try {
+                lock.lock();
+                for (int i = 0; i < 10; i++) {
+                    while (count % 3 != 2)
+                        C.await();// C释放lock锁
+                    System.out.print("C");
+                    count++;
+                    A.signal();// C执行完唤醒A线程
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    static class OOMObject {
+
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        new ThreadA().start();
+        new ThreadB().start();
+        new ThreadC().start();
+
     }
 }
-	
