@@ -302,13 +302,12 @@ public class Middle {
         for (int i = 1; i < rangeList.size(); i++) {
             Range prevRange = rangeList.get(i - 1);
             Range currRange = rangeList.get(i);
-            if(currRange.min >= prevRange.min && currRange.max <= prevRange.max){
+            if (currRange.min >= prevRange.min && currRange.max <= prevRange.max) {
                 currRange.min = prevRange.min;
                 currRange.max = prevRange.max;
                 prevRange.min = Integer.MAX_VALUE;
                 intervalCount--;
-            }
-            else if (currRange.min <= prevRange.max) {
+            } else if (currRange.min <= prevRange.max) {
                 currRange.min = prevRange.min;
                 prevRange.min = Integer.MAX_VALUE;
                 intervalCount--;
@@ -325,9 +324,32 @@ public class Middle {
         return result;
     }
 
+    //560. 和为K的子数组 https://leetcode-cn.com/problems/subarray-sum-equals-k/
+    public static int subarraySum(int[] nums, int k) {
+        int n = nums.length;
+        // map：前缀和 -> 该前缀和出现的次数
+        HashMap<Integer, Integer>
+                preSum = new HashMap<>();
+        // base case
+        preSum.put(0, 1);
+
+        int ans = 0, sum0_i = 0;
+        for (int i = 0; i < n; i++) {
+            sum0_i += nums[i];
+            // 这是我们想找的前缀和 nums[0..j]
+            int sum0_j = sum0_i - k;
+            // 如果前面有这个前缀和，则直接更新答案
+            if (preSum.containsKey(sum0_j))
+                ans += preSum.get(sum0_j);
+            // 把前缀和 nums[0..i] 加入并记录出现次数
+            preSum.put(sum0_i, preSum.getOrDefault(sum0_i, 0) + 1);
+        }
+        return ans;
+    }
+
     public static void main(String[] args) {
         int[] nums = new int[]{-2, 0, 0, 2, 2};
-//        System.out.println(merge(nums));
+        System.out.println(subarraySum(nums, 3));
     }
 
 }

@@ -2,7 +2,10 @@ package Array;
 
 import simple.Array;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 public class Easy {
 
@@ -73,8 +76,34 @@ public class Easy {
     }
 
 
+    //单调栈
+    public static List<Integer> dailyTemperatures(int[] temp) {
+        Stack<Integer> s = new Stack<>();
+        Stack<Integer> s_index = new Stack<>();
+        Stack<Integer> result = new Stack<>();
+        for (int i = temp.length - 1; i >= 0; i--) {
+            while (!s.isEmpty() && s.peek() < temp[i]) {
+                s.pop();
+                s_index.pop();
+            }
+            if (s.isEmpty())
+                result.push(0);
+            else {
+                result.push(s_index.peek() - i);
+            }
+            s.push(temp[i]);
+            s_index.push(i);
+        }
+        List<Integer> aa = new ArrayList<>();
+        while (!result.isEmpty()){
+            aa.add(result.pop());
+        }
+        return aa;
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(isStraight(new int[]{1, 2, 3, 4, 5}));
+        System.out.println(dailyTemperatures(new int[]{73, 74, 75, 71, 69, 72, 76, 73}));
 
     }
 

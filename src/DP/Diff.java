@@ -1,6 +1,6 @@
 package DP;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.Arrays;
 
 public class Diff {
 
@@ -84,9 +84,99 @@ public class Diff {
         return dp[p.length()][s.length()];
     }
 
+    //403. 青蛙过河 https://leetcode-cn.com/problems/frog-jump/
+    public static boolean canCross(int[] stones) {
+        if (stones.length <= 1) return true;
+        int len = stones.length;
+        boolean[][] dp = new boolean[1200][len];
+        dp[0][0] = true;
+        if (stones[1] != 1) return false;
+        dp[1][1] = true;
+        for (int j = 1; j < len; j++) {
+            for (int i = 1; i < 1200; i++) {
+
+                if (dp[i][j]) {
+                    for (int k = j + 1; k < len; k++) {
+                        int distance = stones[k] - stones[j];
+                        System.out.print("from dp[" + (i) + "][" + j + "] ");
+                        if (i - 1 == distance) {
+                            System.out.print("dp[" + (i - 1) + "][" + (k) + "]");
+                            dp[i - 1][k] = true;
+                        }
+                        if (i == distance) {
+                            System.out.print("dp[" + (i) + "][" + (k) + "]");
+                            dp[i][k] = true;
+                        }
+                        if (i + 1 == distance) {
+                            System.out.print("dp[" + (i + 1) + "][" + (k) + "]");
+                            dp[i + 1][k] = true;
+                        }
+                        System.out.print("\n");
+                    }
+                }
+            }
+        }
+        for (int i = 1; i < 1200; i++) {
+            if (dp[i][len - 1]) return true;
+        }
+        return false;
+    }
+
+
+    //546. 移除盒子 https://leetcode-cn.com/problems/remove-boxes/
+    public static int[] copy;
+
+    public static int removeBoxes(int[] boxes) {
+        copy = Arrays.copyOf(boxes, boxes.length);
+        return removeBoxesHelper(boxes, 0);
+    }
+
+    public static int removeBoxesHelper(int[] boxes, int score) {
+        boolean isAllUsed = true;
+        for (int box : boxes) {
+            if (box != -1) {
+                isAllUsed = false;
+                break;
+            }
+        }
+        if (isAllUsed) return score;
+        int result = Integer.MIN_VALUE;
+        for (int i = 0; i < boxes.length; i++) {
+            if (boxes[i] == -1) continue;
+            int j = i + 1;
+            int deleteCount = 0;
+            for (; j < boxes.length; j++) {
+                if (boxes[j] == -1) {
+                    boxes[j] = -2;
+                    deleteCount++;
+                    continue;
+                }
+                if (boxes[j] != boxes[i]) break;
+            }
+            j--;
+            int k = j - i + 1 - deleteCount;
+            for (int x = i; x <= j; x++) {
+                boxes[x] = -1;
+            }
+            int tmp = removeBoxesHelper(boxes, (int) (score + Math.pow(k, 2)));
+            result = Math.max(tmp, result);
+            //回溯
+            for (int x = i; x <= j; x++) {
+                if (boxes[x] == -2) boxes[x] = -1;
+                else
+                    boxes[x] = copy[x];
+            }
+        }
+        return result;
+    }
+
+    //887. 鸡蛋掉落 https://leetcode-cn.com/problems/super-egg-drop/
+    public int superEggDrop(int K, int N) {
+        return 0;
+    }
 
     public static void main(String[] args) {
-        System.out.println(isMatch("a", "a*"));
+        System.out.println(maxProfit(2, new int[]{3, 2, 6, 5, 0, 3}));
     }
 
 }
