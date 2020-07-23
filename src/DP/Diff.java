@@ -175,6 +175,60 @@ public class Diff {
         return 0;
     }
 
+    //85. 最大矩形 https://leetcode-cn.com/problems/maximal-rectangle/
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0) return 0;
+        int maxS = 0;
+        int n = matrix.length, m = matrix[0].length;
+        int[][][] dp = new int[n][m][2];
+        dp[0][0][0] = matrix[0][0] == '1' ? 1 : 0;
+        dp[0][0][1] = matrix[0][0] == '1' ? 1 : 0;
+        for (int i = 1; i < n; i++) {
+            dp[i][0][0] = matrix[i][0] == '1' ? dp[i - 1][0][0] + 1 : 0;
+            maxS = Math.max(dp[i][0][0], maxS);
+            dp[i][0][1] = 0;
+        }
+        for (int j = 1; j < m; j++) {
+            dp[0][j][0] = 0;
+            dp[0][j][1] = matrix[0][j] == '1' ? dp[0][j][0] + 1 : 0;
+            maxS = Math.max(dp[0][j][1], maxS);
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (matrix[i][j] == '0') {
+                    dp[i][j][0] = 0;
+                    dp[i][j][1] = 0;
+                } else {
+                    dp[i][j][0] = 1;
+                    dp[i][j][1] = 1;
+                    if (i - 1 >= 0 && j - 1 >= 0) {
+                        dp[i][j][0] = Math.min(dp[i - 1][j - 1][0], dp[i - 1][j][0]) + 1;
+                        dp[i][j][1] = Math.min(dp[i - 1][j - 1][1], dp[i][j - 1][1]) + 1;
+                        if (dp[i - 1][j - 1][0] == 0) {
+                            if (dp[i - 1][j][0] > dp[i][j - 1][1]) {
+                                dp[i][j][0] = dp[i - 1][j][0] + 1;
+                                dp[i][j][1] = 1;
+                            } else {
+                                dp[i][j][0] = 1;
+                                dp[i][j][1] = dp[i][j - 1][1] + 1;
+                            }
+                        }
+                    }
+                }
+                maxS = Math.max(dp[i][j][0] * dp[i][j][1], maxS);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                System.out.print(dp[i][j][0] + "," + dp[i][j][1] + " ");
+            }
+            System.out.print("\n");
+        }
+
+        return maxS;
+    }
+
     public static void main(String[] args) {
         System.out.println(maxProfit(2, new int[]{3, 2, 6, 5, 0, 3}));
     }

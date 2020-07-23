@@ -75,9 +75,11 @@ public class Test {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        new ThreadA().start();
-        new ThreadB().start();
-        new ThreadC().start();
-
+//        new ThreadA().start();
+//        new ThreadB().start();
+//        new ThreadC().start();
+        int a = 7;
+        Integer b = new Integer(7);
+        System.out.println(a == b);
     }
 }
