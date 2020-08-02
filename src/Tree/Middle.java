@@ -600,6 +600,54 @@ public class Middle {
         }
     }
 
+    //863. 二叉树中所有距离为 K 的结点 https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree/
+    public static List<Integer> resultFor863;
+
+    public static int targetLevel;
+
+    public static List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+        resultFor863 = new ArrayList<>();
+        targetLevel = -1;
+        helper(root, target, K, 0);
+        return resultFor863;
+    }
+
+    public static int helper(TreeNode root, TreeNode target, int K, int level) {
+        if (root != null) {
+            if (root == target) {
+                targetLevel = level;
+                getResult(root, K, 0);
+                return 1;
+            } else {
+                int leftResult = helper(root.left, target, K, level + 1);
+                int rightResult = helper(root.right, target, K, level + 1);
+                if ((leftResult > 0 || rightResult > 0) && targetLevel - level == K) {
+                    resultFor863.add(root.val);
+                }
+                if (leftResult > 0 && targetLevel - level < K) {
+                    getResult(root.right, K - targetLevel + level-1, 0);
+                }
+                if (rightResult > 0 && targetLevel - level < K) {
+                    getResult(root.left, K - targetLevel + level-1, 0);
+                }
+                if (leftResult > 0) return 1;
+                if (rightResult > 0) return 2;
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+    public static void getResult(TreeNode root, int K, int level) {
+        if (root != null) {
+            if (level == K) {
+                resultFor863.add(root.val);
+            }
+            getResult(root.left, K, level + 1);
+            getResult(root.right, K, level + 1);
+        }
+    }
+
     private static class TreeNode {
         int val;
         TreeNode left;
@@ -661,7 +709,8 @@ public class Middle {
 
     public static void main(String[] args) {
         TreeNode root = new TreeNode(3);
-        root.left = new TreeNode(5);
+        TreeNode target = new TreeNode(5);
+        root.left = target;
         root.right = new TreeNode(1);
         root.left.left = new TreeNode(6);
         root.left.right = new TreeNode(2);
@@ -669,7 +718,7 @@ public class Middle {
         root.left.right.right = new TreeNode(4);
         root.right.left = new TreeNode(0);
         root.right.right = new TreeNode(8);
-        System.out.println(findBottomLeftValue(root));
+        System.out.println(distanceK(root, target, 3));
     }
 
 }
