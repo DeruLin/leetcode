@@ -86,6 +86,50 @@ public class Middle {
         return result;
     }
 
+    //415. 字符串相加 https://leetcode-cn.com/problems/add-strings/
+    public String addStrings(String num1, String num2) {
+        int len1 = num1.length();
+        int len2 = num2.length();
+        int i = 0;
+        boolean flag = false;
+        StringBuilder sb = new StringBuilder();
+        while (i < len1 && i < len2) {
+            int c1 = num1.charAt(len1 - 1 - i) - '0';
+            int c2 = num2.charAt(len2 - 1 - i) - '0';
+            int sum = c1 + c2;
+            if (flag) sum++;
+            if (sum >= 10) {
+                flag = true;
+                sum -= 10;
+            } else flag = false;
+            sb.insert(0, sum);
+            i++;
+        }
+        while (i < len1) {
+            int c1 = num1.charAt(len1 - 1 - i) - '0';
+            if (flag) c1++;
+            if (c1 >= 10) {
+                flag = true;
+                c1 -= 10;
+            } else flag = false;
+            sb.insert(0, c1);
+            i++;
+        }
+        while (i < len2) {
+            int c2 = num2.charAt(len2 - 1 - i) - '0';
+            if (flag) c2++;
+            if (c2 >= 10) {
+                flag = true;
+                c2 -= 10;
+            } else flag = false;
+            sb.insert(0, c2);
+            i++;
+        }
+        if (flag)
+            sb.insert(0, 1);
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
         System.out.println(respace(new String[]{"looked", "just", "like", "her", "brother", "je"}, "jesslooked"));
     }
