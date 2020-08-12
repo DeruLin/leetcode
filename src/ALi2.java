@@ -28,14 +28,7 @@ public class ALi2 {
             input[i][1] = sc.nextInt();
         }
 
-        int result = 0;
-        for (int i = 0; i < n; i++) {
-            queue.add(input[i]);
-            while (!queue.isEmpty() && queue.peek()[1] <= input[i][0])
-                queue.poll();
-            result = Math.max(result, queue.size());
-        }
-        System.out.println(result);
+
     }
 
 

@@ -465,7 +465,12 @@ public class Middle {
     public static int maxLevel, count;
 
     public static int countNodes(TreeNode root) {
-        maxLevel = -1;
+        maxLevel = 0;
+        TreeNode tmp = root;
+        while (tmp.left != null) {
+            maxLevel++;
+            tmp = tmp.left;
+        }
         count = 0;
         traverseForCountNodes(root, 0);
         return (int) (Math.pow(2, maxLevel) - 1 + count);
@@ -625,10 +630,10 @@ public class Middle {
                     resultFor863.add(root.val);
                 }
                 if (leftResult > 0 && targetLevel - level < K) {
-                    getResult(root.right, K - targetLevel + level-1, 0);
+                    getResult(root.right, K - targetLevel + level - 1, 0);
                 }
                 if (rightResult > 0 && targetLevel - level < K) {
-                    getResult(root.left, K - targetLevel + level-1, 0);
+                    getResult(root.left, K - targetLevel + level - 1, 0);
                 }
                 if (leftResult > 0) return 1;
                 if (rightResult > 0) return 2;
@@ -646,6 +651,25 @@ public class Middle {
             getResult(root.left, K, level + 1);
             getResult(root.right, K, level + 1);
         }
+    }
+
+    //面试题 04.06. 后继者 https://leetcode-cn.com/problems/successor-lcci/
+    public boolean isFinded;
+
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        isFinded = false;
+        return successorHelper(root, p);
+    }
+
+    public TreeNode successorHelper(TreeNode root, TreeNode p) {
+        if (root != null) {
+            TreeNode leftResult = successorHelper(root.left, p);
+            if (leftResult != null) return leftResult;
+            if (isFinded) return root;
+            if (root == p) isFinded = true;
+            return successorHelper(root.right, p);
+        }
+        return null;
     }
 
     private static class TreeNode {
