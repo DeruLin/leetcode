@@ -229,6 +229,41 @@ public class Diff {
         return maxS;
     }
 
+
+
+    public static int minCut(String s) {
+        int len = s.length();
+        boolean[][] p = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            p[i][i] = true;
+        }
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = 0; j < len; j++) {
+                if (j <= i) continue;
+                char c1 = s.charAt(i);
+                char c2 = s.charAt(j);
+                if (c1 == c2) {
+                    if (j - i == 1) p[i][j] = true;
+                    else p[i][j] = p[i + 1][j - 1];
+                } else p[i][j] = false;
+            }
+        }
+        int[] dp = new int[len];
+        dp[len - 1] = 0;
+        for (int i = len - 2; i >= 0; i--) {
+            if (p[i][len - 1]) dp[i] = 0;
+            else {
+                dp[i] = Integer.MAX_VALUE;
+                for (int j = i; j < len; j++) {
+                    if (p[i][j]) {
+                        dp[i] = Math.min(dp[i], dp[j + 1] + 1);
+                    }
+                }
+            }
+        }
+        return dp[0];
+    }
+
     //1312. 让字符串成为回文串的最少插入次数 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
     public int minInsertions(String s) {
         int len = s.length();
@@ -251,8 +286,9 @@ public class Diff {
         return dp[0][len - 1];
     }
 
+
+
     public static void main(String[] args) {
-        StringBuilder sb = new StringBuilder();
         System.out.println(maxProfit(2, new int[]{3, 2, 6, 5, 0, 3}));
     }
 
