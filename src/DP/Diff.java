@@ -229,8 +229,6 @@ public class Diff {
         return maxS;
     }
 
-
-
     public static int minCut(String s) {
         int len = s.length();
         boolean[][] p = new boolean[len][len];
