@@ -28,6 +28,36 @@ public class Middle {
         return result;
     }
 
+    //75. 颜色分类 https://leetcode-cn.com/problems/sort-colors/
+    public void sortColors(int[] nums) {
+        int len = nums.length;
+        int begin = 0, end = len - 1;
+        int i = 0;
+        while (i < len) {
+            if (i >= end + 1) break;
+            if (nums[i] == 0) {
+                if (i == begin) {
+                    i++;
+                    begin++;
+                } else {
+                    swap(nums, begin, i);
+                    begin++;
+                }
+            } else if (nums[i] == 2) {
+                swap(nums, end, i);
+                end--;
+            } else {
+                i++;
+            }
+        }
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
 
     public static void main(String[] args) {
         System.out.println(lengthOfLongestSubstring("dvdf"));

@@ -347,9 +347,37 @@ public class Middle {
         return ans;
     }
 
+    //498. 对角线遍历 https://leetcode-cn.com/problems/diagonal-traverse/
+    public static int[] findDiagonalOrder(int[][] matrix) {
+        int m = matrix.length;
+        if (m == 0) return new int[]{};
+        int n = matrix[0].length;
+        int[] result = new int[m * n];
+        int sum = 0;
+        int count = 0;
+        boolean flag = false;
+        while (sum <= m + n - 2) {
+            for (int i = 0; i <= sum; i++) {
+                if (flag) {
+                    if (sum - i >= n || i >= m) continue;
+                    result[count] = matrix[i][sum - i];
+                } else {
+                    if (sum - i >= m || i >= n) continue;
+                    result[count] = matrix[sum - i][i];
+                }
+                count++;
+            }
+            flag = !flag;
+            sum++;
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
-        int[] nums = new int[]{-2, 0, 0, 2, 2};
-        System.out.println(subarraySum(nums, 3));
+        int[][] nums = new int[][]{
+                {1, 2, 3},
+        };
+        System.out.println(Arrays.toString(findDiagonalOrder(nums)));
     }
 
 }

@@ -134,15 +134,115 @@ public class Diff {
         minHeap[j] = tmp;
     }
 
+    //最长回文子串 https://leetcode-cn.com/problems/longest-palindromic-substring/
+    public static String longestPalindrome(String s) {
+        if (s.length() == 0) return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("#");
+        for (int i = 0; i < s.length(); i++) {
+            sb.append(s.charAt(i)).append("#");
+        }
+        String str = sb.toString();
+        String result = "";
+        int maxLen = Integer.MIN_VALUE;
+        int c = 0;
+        int[] l = new int[str.length()];
+        int[] r = new int[str.length()];
+        l[0] = 0;
+        r[0] = 0;
+        int tmpL, tmpR, tmpLen;
+        for (int i = 1; i < str.length(); i++) {
+            if (i > r[i - 1]) {
+                tmpL = i - 1;
+                tmpR = i + 1;
+                while (tmpL >= 0 && tmpR < str.length() && str.charAt(tmpL) == str.charAt(tmpR)) {
+                    tmpL -= 1;
+                    tmpR += 1;
+                }
+                tmpL += 1;
+                tmpR -= 1;
+                tmpLen = tmpR - tmpL + 1;
+            } else {
+                int j = c - (i - c);
+                if (l[j] > l[i - 1]) {
+                    tmpLen = r[j] - l[j] + 1;
+                    tmpL = i - (j - l[j]);
+                    tmpR = i + (r[j] - j);
+                } else if (l[j] < l[i - 1]) {
+                    tmpL = i - (r[i - 1] - i);
+                    tmpR = r[i - 1];
+                    tmpLen = tmpR - tmpL + 1;
+                } else {
+                    tmpL = i - 1;
+                    tmpR = i + 1;
+                    while (tmpL >= 0 && tmpR < str.length() && str.charAt(tmpL) == str.charAt(tmpR)) {
+                        tmpL -= 1;
+                        tmpR += 1;
+                    }
+                    tmpL += 1;
+                    tmpR -= 1;
+                    tmpLen = tmpR - tmpL + 1;
+                }
+            }
+            l[i] = tmpL;
+            r[i] = tmpR;
+            if (r[i] > r[i - 1])
+                c = i;
+            result = tmpLen > maxLen ? str.substring(tmpL, tmpR) : result;
+            maxLen = Math.max(maxLen, tmpLen);
+        }
+        return result.replace("#", "");
+    }
+
+    //28. 实现 strStr() https://leetcode-cn.com/problems/implement-strstr/ KMP算法
+    public static int strStr(String haystack, String needle) {
+        if (needle.length()==0) return 0;
+        int[] next = getNextArray(needle);
+        int i = 0, j = 0;
+        while (i < haystack.length()) {
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                if (j == needle.length() - 1) {
+                    return i - needle.length() + 1;
+                }
+                i++;
+                j++;
+            } else {
+                i = i - next[j];
+                j = 0;
+            }
+        }
+        return -1;
+    }
+
+    public static int[] getNextArray(String needle) {
+        if (needle.length()==1) return new int[]{-1};
+        if (needle.length()==2) return new int[]{-1,0};
+        int[] next = new int[needle.length()];
+        //以下两行人为规定
+        next[0] = -1;
+        next[1] = 0;
+        int i = 2;
+        while (i < needle.length()) {
+            int jump = i - 1;
+            int c1 = needle.charAt(next[jump]);
+            int c2 = needle.charAt(i - 1);
+            while (c1 != c2) {
+                jump = next[jump];
+                if (next[jump] == -1) break;
+                c1 = needle.charAt(next[jump]);
+            }
+            if (c1 == c2) {
+                next[i] = next[jump] + 1;
+            } else {
+                next[i] = 0;
+            }
+            i++;
+        }
+        return next;
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(topKFrequent(new String[]{"the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"}, 4));
-        Queue<Integer> q = new PriorityQueue<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return -o1.compareTo(o2);
-            }
-        });
-
+        System.out.println(strStr("",""));
     }
 }
