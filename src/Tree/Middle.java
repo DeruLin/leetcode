@@ -672,6 +672,30 @@ public class Middle {
         return null;
     }
 
+
+    public TreeNode sortedListToBST(ListNode head) {
+        ListNode median = findMedian(head);
+        TreeNode root = new TreeNode(median.val);
+        if (head == median) root.left = null;
+        else
+            root.left = sortedListToBST(head);
+        root.right = sortedListToBST(median.next);
+        return root;
+    }
+
+    public ListNode findMedian(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        ListNode prev = null;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            prev = slow;
+            slow = slow.next;
+        }
+        if (prev != null) prev.next = null;
+        return slow;
+    }
+
     private static class TreeNode {
         int val;
         TreeNode left;
@@ -709,6 +733,23 @@ public class Middle {
             left = _left;
             right = _right;
             next = _next;
+        }
+    }
+
+    public class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
         }
     }
 

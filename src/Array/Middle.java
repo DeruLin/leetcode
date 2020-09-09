@@ -373,11 +373,33 @@ public class Middle {
         return result;
     }
 
+    //162. 寻找峰值 https://leetcode-cn.com/problems/find-peak-element/
+    public static int findPeakElement(int[] nums) {
+        int len = nums.length;
+        if (len == 0) return 0;
+        return helper(nums, 0, len - 1);
+    }
+
+    public static int helper(int[] nums, int start, int end) {
+        System.out.println(start + " " + end);
+        if (start > end) return -1;
+        if (start == end) return start;
+
+        int middle = (start + end) / 2;
+        if (nums[middle] < nums[middle + 1]) {
+            return helper(nums, middle + 1, end);
+        }
+        else if (nums[middle] > nums[middle + 1]) {
+            return helper(nums, start, middle);
+        }
+        return middle;
+    }
+
     public static void main(String[] args) {
-        int[][] nums = new int[][]{
-                {1, 2, 3},
+        int[] nums = new int[]{
+                1, 2, 3, 1
         };
-        System.out.println(Arrays.toString(findDiagonalOrder(nums)));
+        System.out.println(findPeakElement(nums));
     }
 
 }
